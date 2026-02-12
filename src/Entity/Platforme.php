@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PlatformeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PlatformeRepository::class)]
@@ -21,6 +23,17 @@ class Platforme
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $logo = null;
+
+    /**
+     * @var Collection<int, Film>
+     */
+    #[ORM\ManyToMany(targetEntity: Film::class, mappedBy: 'platformes')]
+    private Collection $films;
+
+    public function __construct()
+    {
+        $this->films = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -59,6 +72,33 @@ class Platforme
     public function setLogo(?string $logo): static
     {
         $this->logo = $logo;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Film>
+     */
+    public function getFilms(): Collection
+    {
+        return $this->films;
+    }
+
+    public function addFilm(Film $film): static
+    {
+        if (!$this->films->contains($film)) {
+            $this->films->add($film);
+            $film->addPlatforme($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFilm(Film $film): static
+    {
+        if ($this->films->removeElement($film)) {
+            $film->removePlatforme($this);
+        }
 
         return $this;
     }

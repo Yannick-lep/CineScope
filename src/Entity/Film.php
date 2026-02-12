@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\FilmRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +24,17 @@ class Film
 
     #[ORM\Column]
     private ?int $releaseYear = null;
+
+    /**
+     * @var Collection<int, Platforme>
+     */
+    #[ORM\ManyToMany(targetEntity: Platforme::class, inversedBy: 'films')]
+    private Collection $platformes;
+
+    public function __construct()
+    {
+        $this->platformes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -60,6 +73,30 @@ class Film
     public function setReleaseYear(int $releaseYear): static
     {
         $this->releaseYear = $releaseYear;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Platforme>
+     */
+    public function getPlatformes(): Collection
+    {
+        return $this->platformes;
+    }
+
+    public function addPlatforme(Platforme $platforme): static
+    {
+        if (!$this->platformes->contains($platforme)) {
+            $this->platformes->add($platforme);
+        }
+
+        return $this;
+    }
+
+    public function removePlatforme(Platforme $platforme): static
+    {
+        $this->platformes->removeElement($platforme);
 
         return $this;
     }
