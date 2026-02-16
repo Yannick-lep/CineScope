@@ -1,3 +1,29 @@
-<h1>Bienvenue sur CinéScope</h1>
-<p>Découvrez où regarder vos films préférés en streaming.</p>
-<a href="{{ path('film_list') }}">Voir les films</a>
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - CinéScope{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Bienvenue sur CinéScope </h1>
+    <p style="font-size: 1.2rem; color: #94a3b8; margin-bottom: 2rem;">
+        Trouvez où regarder vos films préférés en streaming
+    </p>
+
+    <h2 style="font-size: 1.8rem; margin-bottom: 1.5rem;">Derniers films ajoutés</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
+        {% for film in films %}
+            <div style="background: #1e293b; padding: 1.5rem; border-radius: 0.5rem;">
+                <h3 style="color: #38bdf8; margin-bottom: 0.5rem;">{{ film.title }}</h3>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1rem;">{{ film.releaseYear }}</p>
+                <p style="margin-bottom: 1rem;">{{ film.synopsis|slice(0, 100) }}...</p>
+                <a href="{{ path('app_film_show', {id: film.id}) }}" class="btn">Voir plus</a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div style="margin-top: 3rem; text-align: center;">
+        <a href="{{ path('app_films') }}" class="btn">Voir tous les films</a>
+    </div>
+</div>
+{% endblock %}
