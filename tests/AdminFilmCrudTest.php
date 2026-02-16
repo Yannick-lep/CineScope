@@ -23,40 +23,48 @@ class AdminFilmCrudTest extends WebTestCase
         $crawler = $client->request('GET', '/admin/films/new');
         $this->assertResponseIsSuccessful();
         
-        // 3. Remplir le formulaire
+        // 3. Récupérer les plateformes
         $plateformeRepository = static::getContainer()->get(PlatformeRepository::class);
         $netflix = $plateformeRepository->findOneBy(['name' => 'Netflix']);
         $prime = $plateformeRepository->findOneBy(['name' => 'Prime Video']);
         
-        $form = $crawler->selectButton('Enregistrer')->form([
-            'film[title]' => 'Film de Test',
-            'film[synopsis]' => 'Ceci est un synopsis de test',
-            'film[releaseYear]' => 2024,
+        // 4. Remplir et soumettre le formulaire
+        $form = $crawler->selectButton('Save')->form([
+            'film[title]' => 'Film de Test Automatique',
+            'film[synopsis]' => 'Ceci est un synopsis de test automatique',
+            'film[releaseYear]' => 2025,
             'film[platformes]' => [$netflix->getId(), $prime->getId()],
         ]);
         
-        // 4. Soumettre le formulaire
         $client->submit($form);
         
         // 5. Vérifier la redirection
         $this->assertResponseRedirects();
         $client->followRedirect();
+        $this->assertResponseIsSuccessful();
         
         // 6. Vérifier que le film est en base
         $filmRepository = static::getContainer()->get(FilmRepository::class);
-        $film = $filmRepository->findOneBy(['title' => 'Film de Test']);
+        $film = $filmRepository->findOneBy(['title' => 'Film de Test Automatique']);
         
-        $this->assertNotNull($film);
-        $this->assertEquals('Ceci est un synopsis de test', $film->getSynopsis());
-        $this->assertEquals(2024, $film->getReleaseYear());
+        $this->assertNotNull($film, 'Le film devrait être créé en base');
+        $this->assertEquals('Ceci est un synopsis de test automatique', $film->getSynopsis());
+        $this->assertEquals(2025, $film->getReleaseYear());
         
         // 7. Vérifier les relations avec les plateformes
-        $this->assertCount(2, $film->getPlatformes());
-        $platformeNames = array_map(
-            fn($p) => $p->getName(),
-            $film->getPlatformes()->toArray()
-        );
+        $this->assertCount(2, $film->getPlatformes(), 'Le film devrait avoir 2 plateformes');
+        
+        $platformeNames = [];
+        foreach ($film->getPlatformes() as $platforme) {
+            $platformeNames[] = $platforme->getName();
+        }
+        
         $this->assertContains('Netflix', $platformeNames);
         $this->assertContains('Prime Video', $platformeNames);
+        
+        // 8. Nettoyage : supprimer le film de test
+        $entityManager = static::getContainer()->get('doctrine')->getManager();
+        $entityManager->remove($film);
+        $entityManager->flush();
     }
 }
