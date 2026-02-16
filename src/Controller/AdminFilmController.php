@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Film;
-use App\Form\Film1Type;
 use App\Form\FilmType;
 use App\Repository\FilmRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,7 +29,7 @@ class AdminFilmController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $film = new Film();
-        $form = $this->createForm(Film1Type::class, $film);
+        $form = $this->createForm(FilmType::class, $film);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -57,7 +56,7 @@ class AdminFilmController extends AbstractController
     #[Route('/{id}/edit', name: 'app_admin_film_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Film $film, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(Film1Type::class, $film);
+        $form = $this->createForm(FilmType::class, $film);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
