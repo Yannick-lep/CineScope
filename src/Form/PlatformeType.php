@@ -9,7 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PlatformeType extends AbstractType
+class Platforme1Type extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -21,8 +21,6 @@ class PlatformeType extends AbstractType
                 'class' => Film::class,
                 'choice_label' => 'id',
                 'multiple' => true,
-                'expanded' => false,        
-                'by_reference' => false,    
             ])
         ;
     }
