@@ -4,19 +4,29 @@ namespace App\Controller;
 
 use App\Entity\Film;
 use App\Repository\FilmRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class FilmController extends AbstractController
 {
     #[Route('/films', name: 'app_films')]
-    public function index(FilmRepository $filmRepository): Response
+    public function index(FilmRepository $filmRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $films = $filmRepository->findAll();
+        $query = $filmRepository->createQueryBuilder('f')
+            ->orderBy('f.title', 'ASC')
+            ->getQuery();
+
+            $pagination = $paginator->paginate(
+                $query,
+                $request->query->getInt('page', 1),
+                9
+            );
         
         return $this->render('film/index.html.twig', [
-            'films' => $films,
+            'pagination' => $pagination,
         ]);
     }
 

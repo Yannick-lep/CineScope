@@ -6,9 +6,9 @@
 <div class="container">
     <h1 style="font-size: 2.5rem; margin-bottom: 2rem;">🎬 Catalogue de films</h1>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
-        {% for film in films %}
-            <div style="background: #1e293b; padding: 1.5rem; border-radius: 0.5rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+        {% for film in pagination %}
+            <div class="card">
                 <h3 style="color: #38bdf8; margin-bottom: 0.5rem;">{{ film.title }}</h3>
                 <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1rem;">
                     📅 {{ film.releaseYear }}
@@ -41,5 +41,44 @@
             <p style="color: #94a3b8;">Aucun film disponible pour le moment.</p>
         {% endfor %}
     </div>
+
+    {# Pagination #}
+    <div style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+        {{ knp_pagination_render(pagination) }}
+    </div>
 </div>
+
+<style>
+    /* Style de pagination personnalisé */
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+        list-style: none;
+        padding: 0;
+    }
+    
+    .pagination a,
+    .pagination span {
+        padding: 0.5rem 1rem;
+        background: rgba(30, 41, 59, 0.6);
+        color: #cbd5e1;
+        text-decoration: none;
+        border-radius: 0.5rem;
+        border: 1px solid rgba(56, 189, 248, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .pagination a:hover {
+        background: rgba(56, 189, 248, 0.2);
+        border-color: rgba(56, 189, 248, 0.3);
+        color: #38bdf8;
+    }
+    
+    .pagination .current {
+        background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+        color: #0f172a;
+        font-weight: 600;
+        border-color: transparent;
+    }
+</style>
 {% endblock %}
