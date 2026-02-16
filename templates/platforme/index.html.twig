@@ -1,39 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Platforme index{% endblock %}
+{% block title %}Plateformes - CinéScope{% endblock %}
 
 {% block body %}
-    <h1>Platforme index</h1>
+<div class="container">
+    <h1 style="font-size: 2.5rem; margin-bottom: 2rem;"> Plateformes de streaming</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Url</th>
-                <th>Logo</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem;">
         {% for platforme in platformes %}
-            <tr>
-                <td>{{ platforme.id }}</td>
-                <td>{{ platforme.name }}</td>
-                <td>{{ platforme.url }}</td>
-                <td>{{ platforme.logo }}</td>
-                <td>
-                    <a href="{{ path('app_platforme_show', {'id': platforme.id}) }}">show</a>
-                    <a href="{{ path('app_platforme_edit', {'id': platforme.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <div style="background: #1e293b; padding: 1.5rem; border-radius: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    {% if platforme.logo %}
+                        <img src="{{ platforme.logo }}" alt="{{ platforme.name }}" style="width: 50px; height: 50px; object-fit: contain;">
+                    {% else %}
+                        <span style="font-size: 2rem;">🎬</span>
+                    {% endif %}
+                    <h3 style="color: #38bdf8; font-size: 1.5rem;">{{ platforme.name }}</h3>
+                </div>
+                
+                <p style="color: #94a3b8; margin-bottom: 1rem;">
+                    <strong>{{ platforme.films|length }}</strong> film(s) disponible(s)
+                </p>
 
-    <a href="{{ path('app_platforme_new') }}">Create new</a>
+                {% if platforme.films|length > 0 %}
+                    <div style="border-top: 1px solid #334155; padding-top: 1rem; margin-top: 1rem;">
+                        <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.5rem;"><strong>Films disponibles :</strong></p>
+                        <ul style="list-style: none; padding: 0;">
+                            {% for film in platforme.films|slice(0, 5) %}
+                                <li style="margin-bottom: 0.25rem;">
+                                    <a href="{{ path('app_film_show', {id: film.id}) }}" style="color: #38bdf8; text-decoration: none;">
+                                        • {{ film.title }} ({{ film.releaseYear }})
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            {% if platforme.films|length > 5 %}
+                                <li style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.5rem;">
+                                    ... et {{ platforme.films|length - 5 }} autre(s)
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if platforme.url %}
+                    <a href="{{ platforme.url }}" target="_blank" class="btn" style="margin-top: 1rem; display: inline-block;">
+                        Visiter le site
+                    </a>
+                {% endif %}
+            </div>
+        {% else %}
+            <p style="color: #94a3b8;">Aucune plateforme disponible pour le moment.</p>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
