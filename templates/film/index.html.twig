@@ -6,6 +6,47 @@
 <div class="container">
     <h1 style="font-size: 2.5rem; margin-bottom: 2rem;">🎬 Catalogue de films</h1>
 
+    {# Barre de recherche et filtres #}
+    <form method="get" style="margin-bottom: 2rem;">
+        <div style="display: grid; gap: 1rem; grid-template-columns: 1fr auto auto auto;">
+            <input 
+                type="text" 
+                name="search" 
+                placeholder="Rechercher un film..." 
+                value="{{ search }}"
+                style="padding: 0.75rem 1rem; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 0.5rem; color: #e2e8f0;"
+            >
+            
+            <select name="year" style="padding: 0.75rem 1rem; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 0.5rem; color: #e2e8f0;">
+                <option value="">Toutes les années</option>
+                {% for y in years %}
+                    <option value="{{ y }}" {% if selectedYear == y %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+            
+            <select name="platforme" style="padding: 0.75rem 1rem; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 0.5rem; color: #e2e8f0;">
+                <option value="">Toutes les plateformes</option>
+                {% for platforme in platformes %}
+                    <option value="{{ platforme.id }}" {% if selectedPlatforme == platforme.id %}selected{% endif %}>{{ platforme.name }}</option>
+                {% endfor %}
+            </select>
+            
+            <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" class="btn">🔍 Filtrer</button>
+                {% if search or selectedYear or selectedPlatforme %}
+                    <a href="{{ path('app_films') }}" class="btn" style="background: rgba(148, 163, 184, 0.2);">✕</a>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+
+    {% if search or selectedYear or selectedPlatforme %}
+        <p style="color: #94a3b8; margin-bottom: 1rem;">
+            {{ pagination.getTotalItemCount }} film(s) trouvé(s)
+            {% if search %} pour "<strong style="color: #38bdf8;">{{ search }}</strong>"{% endif %}
+        </p>
+    {% endif %}
+
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
         {% for film in pagination %}
             <div class="card">
@@ -38,7 +79,13 @@
                 <a href="{{ path('app_film_show', {id: film.id}) }}" class="btn">Voir les détails</a>
             </div>
         {% else %}
-            <p style="color: #94a3b8;">Aucun film disponible pour le moment.</p>
+            <p style="color: #94a3b8;">
+                {% if search or selectedYear or selectedPlatforme %}
+                    Aucun film ne correspond à vos critères.
+                {% else %}
+                    Aucun film disponible pour le moment.
+                {% endif %}
+            </p>
         {% endfor %}
     </div>
 
@@ -49,7 +96,6 @@
 </div>
 
 <style>
-    /* Style de pagination personnalisé */
     .pagination {
         display: flex;
         gap: 0.5rem;
@@ -79,6 +125,12 @@
         color: #0f172a;
         font-weight: 600;
         border-color: transparent;
+    }
+    
+    @media (max-width: 768px) {
+        form > div {
+            grid-template-columns: 1fr !important;
+        }
     }
 </style>
 {% endblock %}

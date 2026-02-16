@@ -24,6 +24,9 @@ class Film
 
     #[ORM\Column]
     private ?int $releaseYear = null;
+    
+     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $poster = null; 
 
     /**
      * @var Collection<int, Platforme>
@@ -97,6 +100,17 @@ class Film
     public function removePlatforme(Platforme $platforme): static
     {
         $this->platformes->removeElement($platforme);
+
+        return $this;
+    }
+    public function getPoster(): ?string
+    {
+        return $this->poster;
+    }
+
+    public function setPoster(?string $poster): static
+    {
+        $this->poster = $poster;
 
         return $this;
     }
