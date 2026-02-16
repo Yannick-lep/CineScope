@@ -1,39 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Film index{% endblock %}
+{% block title %}Films - CinéScope{% endblock %}
 
 {% block body %}
-    <h1>Film index</h1>
+<div class="container">
+    <h1 style="font-size: 2.5rem; margin-bottom: 2rem;">🎬 Catalogue de films</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Synopsis</th>
-                <th>ReleaseYear</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
         {% for film in films %}
-            <tr>
-                <td>{{ film.id }}</td>
-                <td>{{ film.title }}</td>
-                <td>{{ film.synopsis }}</td>
-                <td>{{ film.releaseYear }}</td>
-                <td>
-                    <a href="{{ path('app_film_show', {'id': film.id}) }}">show</a>
-                    <a href="{{ path('app_film_edit', {'id': film.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <div style="background: #1e293b; padding: 1.5rem; border-radius: 0.5rem;">
+                <h3 style="color: #38bdf8; margin-bottom: 0.5rem;">{{ film.title }}</h3>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1rem;">
+                    📅 {{ film.releaseYear }}
+                </p>
+                
+                {% if film.synopsis %}
+                    <p style="margin-bottom: 1rem; color: #cbd5e1;">
+                        {{ film.synopsis|length > 150 ? film.synopsis|slice(0, 150) ~ '...' : film.synopsis }}
+                    </p>
+                {% endif %}
 
-    <a href="{{ path('app_film_new') }}">Create new</a>
+                {% if film.platformes|length > 0 %}
+                    <div style="margin-bottom: 1rem;">
+                        <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.5rem;">
+                            <strong>Disponible sur :</strong>
+                        </p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            {% for platforme in film.platformes %}
+                                <span style="background: #0f172a; padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.85rem; color: #38bdf8;">
+                                    {{ platforme.name }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <a href="{{ path('app_film_show', {id: film.id}) }}" class="btn">Voir les détails</a>
+            </div>
+        {% else %}
+            <p style="color: #94a3b8;">Aucun film disponible pour le moment.</p>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

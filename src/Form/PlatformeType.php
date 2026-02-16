@@ -9,7 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class Platforme1Type extends AbstractType
+class PlatformeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

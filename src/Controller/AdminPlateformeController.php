@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Platforme;
-use App\Form\PlatformeType;
+use App\Form\PlateformeType;
 use App\Repository\PlatformeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +28,7 @@ class AdminPlateformeController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $platforme = new Platforme();
-        $form = $this->createForm(PlatformeType::class, $platforme);
+        $form = $this->createForm(PlateformeType::class, $platforme);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -55,7 +55,7 @@ class AdminPlateformeController extends AbstractController
     #[Route('/{id}/edit', name: 'app_admin_plateforme_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Platforme $platforme, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(PlatformeType::class, $platforme);
+        $form = $this->createForm(PlateformeType::class, $platforme);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

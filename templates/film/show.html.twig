@@ -1,34 +1,54 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Film{% endblock %}
+{% block title %}{{ film.title }} - CinéScope{% endblock %}
 
 {% block body %}
-    <h1>Film</h1>
+<div class="container">
+    <div style="max-width: 800px; margin: 0 auto;">
+        <a href="{{ path('app_films') }}" style="color: #38bdf8; text-decoration: none; display: inline-block; margin-bottom: 2rem;">
+            ← Retour à la liste
+        </a>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ film.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ film.title }}</td>
-            </tr>
-            <tr>
-                <th>Synopsis</th>
-                <td>{{ film.synopsis }}</td>
-            </tr>
-            <tr>
-                <th>ReleaseYear</th>
-                <td>{{ film.releaseYear }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div style="background: #1e293b; padding: 2rem; border-radius: 0.5rem;">
+            <h1 style="font-size: 2.5rem; color: #38bdf8; margin-bottom: 1rem;">{{ film.title }}</h1>
+            
+            <p style="color: #94a3b8; font-size: 1.1rem; margin-bottom: 2rem;">
+                 Année de sortie : <strong>{{ film.releaseYear }}</strong>
+            </p>
 
-    <a href="{{ path('app_film_index') }}">back to list</a>
+            {% if film.synopsis %}
+                <div style="margin-bottom: 2rem;">
+                    <h2 style="font-size: 1.3rem; margin-bottom: 1rem;"> Synopsis</h2>
+                    <p style="line-height: 1.8; color: #cbd5e1;">{{ film.synopsis }}</p>
+                </div>
+            {% endif %}
 
-    <a href="{{ path('app_film_edit', {'id': film.id}) }}">edit</a>
-
-    {{ include('film/_delete_form.html.twig') }}
+            {% if film.platformes|length > 0 %}
+                <div style="border-top: 1px solid #334155; padding-top: 2rem; margin-top: 2rem;">
+                    <h2 style="font-size: 1.3rem; margin-bottom: 1.5rem;"> Où regarder ce film ?</h2>
+                    
+                    <div style="display: grid; gap: 1rem;">
+                        {% for platforme in film.platformes %}
+                            <div style="background: #0f172a; padding: 1.5rem; border-radius: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    {% if platforme.logo %}
+                                        <img src="{{ platforme.logo }}" alt="{{ platforme.name }}" style="width: 40px; height: 40px; object-fit: contain;">
+                                    {% endif %}
+                                    <span style="font-size: 1.2rem; font-weight: 600;">{{ platforme.name }}</span>
+                                </div>
+                                {% if platforme.url %}
+                                    <a href="{{ platforme.url }}" target="_blank" class="btn">
+                                        Visiter →
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <p style="color: #94a3b8; font-style: italic;">Ce film n'est actuellement disponible sur aucune plateforme.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}
