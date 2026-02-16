@@ -19,7 +19,7 @@ class FilmType extends AbstractType
             ->add('releaseYear')
             ->add('platformes', EntityType::class, [
                 'class' => Platforme::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
                 'multiple' => true,
             ])
         ;
